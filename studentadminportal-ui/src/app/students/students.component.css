@@ -10,9 +10,9 @@ table{
 }
 
 .search-input:active{
-    border: 1px solid #bbb;
+    border: 2px solid #bbb;
 }
 
 .search-input:focus{
-    border: 1px solid #aaa;
+    border: 2px solid #aaa;
 }
