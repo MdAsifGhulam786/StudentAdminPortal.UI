@@ -33,6 +33,8 @@ export class ViewStudentComponent implements OnInit {
     }
   }
   genderList:Gender[] = [];
+  isNewStudent:boolean = false;
+  header:string = '';
 
   constructor(
     private studentService: StudentService,
@@ -45,14 +47,23 @@ export class ViewStudentComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       this.studentId = params.get('id');
-
-      if (this.studentId) {
-        this.studentService
-          .getStudent(this.studentId)
-          .subscribe((successResponse) => {
-            this.student = successResponse;
-          });
-
+      if(this.studentId?.toLowerCase()==='Add'.toLowerCase())
+      {
+        //new student Functionality
+        this.isNewStudent = true;
+        this.header = 'Add New Student'
+      }
+      else{
+        //Existing student Functionality
+        this.isNewStudent = false;
+        this.header = 'View Student';
+        if (this.studentId) {
+          this.studentService
+            .getStudent(this.studentId)
+            .subscribe((successResponse) => {
+              this.student = successResponse;
+            });
+        }
         this.genderService.getGenderList()
         .subscribe((successResponse)=>{
           this.genderList = successResponse;
@@ -84,5 +95,17 @@ export class ViewStudentComponent implements OnInit {
         },2000)
       }
     )
+  }
+
+  onAdd():void {
+    this.studentService.AddStudent(this.student)
+    .subscribe((successResponse)=>{
+      this.snackBar.open('Student added successfully',undefined,{
+        duration: 2000
+      });
+      setTimeout(()=>{
+        this.router.navigateByUrl(`students/${successResponse.id}`);
+      },2000)
+    });
   }
 }
